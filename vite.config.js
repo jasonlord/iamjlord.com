@@ -7,13 +7,16 @@ export default defineConfig({
   build: {
     rollupOptions: {
       input: {
-        'fintech-dashboard': resolve(__dirname, 'src/components/fintech-dashboard/fintech-dashboard.js'),
+        "fintech-dashboard": resolve(
+          __dirname,
+          "src/components/fintech-dashboard/fintech-dashboard.js"
+        ),
         // Add more components here as needed
       },
       output: {
-        entryFileNames: '[name].js',
-        chunkFileNames: '[name].js',
-        assetFileNames: '[name].[ext]',
+        entryFileNames: "[name].js",
+        chunkFileNames: "[name].js",
+        assetFileNames: "[name].[ext]",
       },
     },
   },
