@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Component Preview - Test Tailwind</title>
+  </head>
+  <body class="min-h-screen bg-slate-950 flex items-center justify-center p-6">
+    <div style="position: absolute; top: 20px; left: 20px">
+      <h2
+        style="
+          color: #e2e8f0;
+          font-size: 1.5rem;
+          font-weight: 700;
+          margin-bottom: 0.5rem;
+        "
+      >
+        Component Preview
+      </h2>
+      <p style="color: #94a3b8; font-size: 0.875rem">
+        This page previews your embeddable components during development.
+      </p>
+    </div>
+
+    <!-- Card Component Preview -->
+    <div id="tailwind-card"></div>
+
+    <!-- Load the card component -->
+    <script type="module" src="/src/components/card/card.js"></script>
+  </body>
+</html>
