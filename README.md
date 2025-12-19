@@ -1,6 +1,13 @@
 # Webflow Embeddable Components
 
-This project creates embeddable components with Tailwind CSS that can be easily dropped into Webflow (or any website) via CDN.
+This project creates embeddable scrollytelling components with Tailwind CSS that can be easily dropped into Webflow (or any website) via CDN.
+
+## Current Component: Fintech Dashboard
+
+A scrollytelling showcase featuring:
+- Desktop → Tablet → Mobile device transitions
+- 3D mouse-tracking effects
+- Smooth scroll-based animations
 
 ## Project Structure
 
@@ -8,14 +15,14 @@ This project creates embeddable components with Tailwind CSS that can be easily 
 test-tailwind-01/
 ├── src/
 │   ├── components/
-│   │   └── card/
-│   │       ├── card.html      # HTML snippet
-│   │       ├── card.js        # Component logic
-│   │       └── card.css       # Component styles
+│   │   └── fintech-dashboard/
+│   │       ├── fintech-dashboard.html      # HTML snippet
+│   │       ├── fintech-dashboard.js        # Component logic + animations
+│   │       └── fintech-dashboard.css       # Component styles
 │   └── shared/
-│       └── tailwind.css       # Global Tailwind styles
-├── index.html                 # Dev preview page
-├── vite.config.js             # Build configuration
+│       └── tailwind.css                    # Global Tailwind styles
+├── index.html                              # Dev preview page
+├── vite.config.js                          # Build configuration
 └── package.json
 ```
 
@@ -35,8 +42,8 @@ npm run dev
 npm run build
 
 # Output will be in /dist:
-# - card.js
-# - card.css
+# - fintech-dashboard.js
+# - fintech-dashboard.css
 ```
 
 ## Deployment
@@ -77,11 +84,11 @@ After deploying to Netlify, you'll get a URL like `https://your-site.netlify.app
 Paste this into a Webflow **Embed** element:
 
 ```html
-<div id="tailwind-card"></div>
-<script src="https://your-site.netlify.app/card.js"></script>
+<div id="fintech-dashboard"></div>
+<script src="https://iamjlordcom.netlify.app/fintech-dashboard.js"></script>
 ```
 
-That's it! The script automatically loads the CSS and initializes the component.
+That's it! The script automatically loads the CSS, initializes the component, and handles all animations.
 
 ## Adding New Components
 
@@ -105,8 +112,9 @@ That's it! The script automatically loads the CSS and initializes the component.
 
 ## Tips
 
-- Keep component IDs unique (`#tailwind-card`, `#tailwind-button`, etc.)
+- Keep component IDs unique (`#fintech-dashboard`, etc.)
 - Use Tailwind classes for styling when possible
 - Test locally with `npm run dev` before deploying
 - Check the browser console for any errors
+- For scroll-based animations, make sure the container has enough height (this component uses 350vh)
 

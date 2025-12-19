@@ -1,0 +1,12 @@
+/* Fintech Dashboard Component Styles */
+
+#fintech-dashboard {
+  /* Container styles */
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+/* Smooth transitions */
+.device-layer {
+  transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+

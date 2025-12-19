@@ -7,9 +7,8 @@ export default defineConfig({
   build: {
     rollupOptions: {
       input: {
-        card: resolve(__dirname, 'src/components/card/card.js'),
-        // Add more components here:
-        // button: resolve(__dirname, 'src/components/button/button.js'),
+        'fintech-dashboard': resolve(__dirname, 'src/components/fintech-dashboard/fintech-dashboard.js'),
+        // Add more components here as needed
       },
       output: {
         entryFileNames: '[name].js',
