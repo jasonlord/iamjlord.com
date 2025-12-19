@@ -6,7 +6,10 @@
     sans-serif;
 }
 
-/* Smooth transitions */
+/* GPU acceleration for smooth animations */
 .device-layer {
-  transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transform: translate3d(0, 0, 0);
 }
