@@ -84,11 +84,11 @@ function initFintechDashboard() {
       tabletScale = 0.9 + progress * 0.33;
 
       labelDesktop.className =
-        "text-xs font-medium px-2 py-1 rounded bg-neutral-900 text-white transition-all duration-300";
+        "text-xs font-medium px-2 py-1 rounded bg-white text-neutral-900 transition-all duration-300";
       labelTablet.className =
-        "text-xs font-medium px-2 py-1 rounded text-neutral-400 transition-all duration-300";
+        "text-xs font-medium px-2 py-1 rounded text-neutral-500 transition-all duration-300";
       labelMobile.className =
-        "text-xs font-medium px-2 py-1 rounded text-neutral-400 transition-all duration-300";
+        "text-xs font-medium px-2 py-1 rounded text-neutral-500 transition-all duration-300";
     } else if (progress >= 0.35 && progress < 0.7) {
       // Tablet phase
       desktopOp = 0;
@@ -100,11 +100,11 @@ function initFintechDashboard() {
       mobileScale = 0.9 + (progress - 0.35) * 0.33;
 
       labelDesktop.className =
-        "text-xs font-medium px-2 py-1 rounded text-neutral-400 transition-all duration-300";
+        "text-xs font-medium px-2 py-1 rounded text-neutral-500 transition-all duration-300";
       labelTablet.className =
-        "text-xs font-medium px-2 py-1 rounded bg-neutral-900 text-white transition-all duration-300";
+        "text-xs font-medium px-2 py-1 rounded bg-white text-neutral-900 transition-all duration-300";
       labelMobile.className =
-        "text-xs font-medium px-2 py-1 rounded text-neutral-400 transition-all duration-300";
+        "text-xs font-medium px-2 py-1 rounded text-neutral-500 transition-all duration-300";
     } else {
       // Mobile phase
       desktopOp = 0;
@@ -113,11 +113,11 @@ function initFintechDashboard() {
       mobileScale = 1;
 
       labelDesktop.className =
-        "text-xs font-medium px-2 py-1 rounded text-neutral-400 transition-all duration-300";
+        "text-xs font-medium px-2 py-1 rounded text-neutral-500 transition-all duration-300";
       labelTablet.className =
-        "text-xs font-medium px-2 py-1 rounded text-neutral-400 transition-all duration-300";
+        "text-xs font-medium px-2 py-1 rounded text-neutral-500 transition-all duration-300";
       labelMobile.className =
-        "text-xs font-medium px-2 py-1 rounded bg-neutral-900 text-white transition-all duration-300";
+        "text-xs font-medium px-2 py-1 rounded bg-white text-neutral-900 transition-all duration-300";
     }
 
     // Apply opacity and z-index
