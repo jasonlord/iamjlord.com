@@ -1,6 +1,11 @@
 import "../../shared/tailwind.css";
 import "./fintech-dashboard.css";
 import html from "./fintech-dashboard.html?raw";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { Observer } from "gsap/Observer";
+
+gsap.registerPlugin(ScrollTrigger, Observer);
 
 // Auto-inject CSS stylesheet
 function injectCSS() {
@@ -42,14 +47,10 @@ function initFintechDashboard() {
 
   if (!section || !desktop || !tablet || !mobile) return;
 
+  // Mouse tracking for 3D tilt
   let mouseX = 0;
   let mouseY = 0;
-  let targetRotateX = 0;
-  let targetRotateY = 0;
-  let currentRotateX = 0;
-  let currentRotateY = 0;
 
-  // Track mouse position
   window.addEventListener("mousemove", (e) => {
     const width = window.innerWidth;
     const height = window.innerHeight;
@@ -57,104 +58,129 @@ function initFintechDashboard() {
     mouseY = (e.clientY - height / 2) / (height / 2);
   });
 
-  // Main Animation Loop
-  function animate() {
-    // Calculate scroll progress
-    const rect = section.getBoundingClientRect();
-    const sectionHeight = section.offsetHeight;
-    const windowHeight = window.innerHeight;
+  // Apply mouse tilt with GSAP
+  gsap.ticker.add(() => {
+    const rotateX = -mouseY * 8;
+    const rotateY = mouseX * 8;
 
-    let progress = -rect.top / (sectionHeight - windowHeight);
-    progress = Math.max(0, Math.min(1, progress));
+    [desktop, tablet, mobile].forEach((device) => {
+      const opacity = parseFloat(getComputedStyle(device).opacity);
+      if (opacity > 0) {
+        gsap.to(device, {
+          rotationX: rotateX,
+          rotationY: rotateY,
+          duration: 0.5,
+          ease: "power2.out",
+          transformPerspective: 1000,
+        });
+      }
+    });
+  });
 
-    // Device transitions
-    let desktopOp = 1;
-    let tabletOp = 0;
-    let mobileOp = 0;
-    let desktopScale = 1;
-    let tabletScale = 0.9;
-    let mobileScale = 0.9;
+  let currentSection = 0;
 
-    if (progress < 0.35) {
-      // Desktop phase
-      desktopOp = 1 - progress * 3.3;
-      desktopScale = 1 - progress * 0.2;
+  // Configure ScrollTrigger for instant response
+  ScrollTrigger.config({
+    autoRefreshEvents: "visibilitychange,DOMContentLoaded,load",
+  });
 
-      tabletOp = progress * 3.3 - 0.3;
-      tabletScale = 0.9 + progress * 0.33;
+  // Set up ScrollTrigger with precise snap points
+  const st = ScrollTrigger.create({
+    trigger: section,
+    start: "top top",
+    end: "bottom bottom",
+    pin: section.querySelector(".sticky"),
+    pinSpacing: false,
+    snap: {
+      snapTo: [0, 0.5, 1], // Snap to exact positions where each device is fully visible
+      duration: 0.25,
+      ease: "power1.out",
+    },
+    onUpdate: (self) => {
+      const progress = self.progress;
 
-      labelDesktop.className =
-        "text-xs font-medium px-2 py-1 rounded bg-white text-neutral-900 transition-all duration-300";
-      labelTablet.className =
-        "text-xs font-medium px-2 py-1 rounded text-neutral-500 transition-all duration-300";
-      labelMobile.className =
-        "text-xs font-medium px-2 py-1 rounded text-neutral-500 transition-all duration-300";
-    } else if (progress >= 0.35 && progress < 0.7) {
-      // Tablet phase
-      desktopOp = 0;
+      // Desktop fully visible (0 to 0.25)
+      if (progress <= 0.25) {
+        gsap.to(desktop, {
+          opacity: 1,
+          scale: 1,
+          zIndex: 10,
+          duration: 0.3,
+        });
+        gsap.to(tablet, { opacity: 0, scale: 0.9, zIndex: 5, duration: 0.3 });
+        gsap.to(mobile, { opacity: 0, scale: 0.9, zIndex: 1, duration: 0.3 });
+        updateLabels(0);
+      }
+      // Transition from desktop to tablet (0.25 to 0.5)
+      else if (progress < 0.5) {
+        const t = (progress - 0.25) / 0.25; // 0 to 1 transition
+        gsap.to(desktop, {
+          opacity: 1 - t,
+          scale: 1 - t * 0.1,
+          zIndex: t > 0.5 ? 5 : 10,
+          duration: 0.3,
+        });
+        gsap.to(tablet, {
+          opacity: t,
+          scale: 0.9 + t * 0.1,
+          zIndex: t > 0.5 ? 10 : 5,
+          duration: 0.3,
+        });
+        gsap.to(mobile, { opacity: 0, scale: 0.9, zIndex: 1, duration: 0.3 });
+        updateLabels(t > 0.5 ? 1 : 0);
+      }
+      // Tablet fully visible (0.5 to 0.75)
+      else if (progress <= 0.75) {
+        gsap.to(desktop, { opacity: 0, scale: 0.9, zIndex: 1, duration: 0.3 });
+        gsap.to(tablet, {
+          opacity: 1,
+          scale: 1,
+          zIndex: 10,
+          duration: 0.3,
+        });
+        gsap.to(mobile, { opacity: 0, scale: 0.9, zIndex: 5, duration: 0.3 });
+        updateLabels(1);
+      }
+      // Transition from tablet to mobile (0.75 to 1)
+      else {
+        const t = (progress - 0.75) / 0.25; // 0 to 1 transition
+        gsap.to(desktop, { opacity: 0, scale: 0.9, zIndex: 1, duration: 0.3 });
+        gsap.to(tablet, {
+          opacity: 1 - t,
+          scale: 1 - t * 0.1,
+          zIndex: t > 0.5 ? 5 : 10,
+          duration: 0.3,
+        });
+        gsap.to(mobile, {
+          opacity: t,
+          scale: 0.9 + t * 0.1,
+          zIndex: t > 0.5 ? 10 : 5,
+          duration: 0.3,
+        });
+        updateLabels(t > 0.5 ? 2 : 1);
+      }
+    },
+  });
 
-      tabletOp = 1 - (progress - 0.35) * 3.3;
-      tabletScale = 1 - (progress - 0.35) * 0.2;
+  // Update label styles
+  function updateLabels(activeIndex) {
+    if (currentSection === activeIndex) return;
+    currentSection = activeIndex;
 
-      mobileOp = (progress - 0.35) * 3.3 - 0.3;
-      mobileScale = 0.9 + (progress - 0.35) * 0.33;
+    const activeClass =
+      "text-xs font-medium px-2 py-1 rounded bg-white text-neutral-900 transition-all duration-300";
+    const inactiveClass =
+      "text-xs font-medium px-2 py-1 rounded text-neutral-500 transition-all duration-300";
 
-      labelDesktop.className =
-        "text-xs font-medium px-2 py-1 rounded text-neutral-500 transition-all duration-300";
-      labelTablet.className =
-        "text-xs font-medium px-2 py-1 rounded bg-white text-neutral-900 transition-all duration-300";
-      labelMobile.className =
-        "text-xs font-medium px-2 py-1 rounded text-neutral-500 transition-all duration-300";
-    } else {
-      // Mobile phase
-      desktopOp = 0;
-      tabletOp = 0;
-      mobileOp = Math.min(1, (progress - 0.6) * 5);
-      mobileScale = 1;
-
-      labelDesktop.className =
-        "text-xs font-medium px-2 py-1 rounded text-neutral-500 transition-all duration-300";
-      labelTablet.className =
-        "text-xs font-medium px-2 py-1 rounded text-neutral-500 transition-all duration-300";
-      labelMobile.className =
-        "text-xs font-medium px-2 py-1 rounded bg-white text-neutral-900 transition-all duration-300";
-    }
-
-    // Apply opacity and z-index
-    desktop.style.opacity = Math.max(0, desktopOp);
-    desktop.style.zIndex = desktopOp > 0.5 ? 10 : 1;
-
-    tablet.style.opacity = Math.max(0, tabletOp);
-
-    mobile.style.opacity = Math.max(0, mobileOp);
-    mobile.style.zIndex = mobileOp > 0.5 ? 10 : 1;
-
-    // 3D mouse tilt
-    targetRotateX = -mouseY * 8;
-    targetRotateY = mouseX * 8;
-
-    // Smooth interpolation
-    currentRotateX += (targetRotateX - currentRotateX) * 0.1;
-    currentRotateY += (targetRotateY - currentRotateY) * 0.1;
-
-    // Apply transforms with hardware acceleration
-    if (desktopOp > 0) {
-      desktop.style.transform = `translate3d(0, 0, 0) perspective(1000px) scale(${desktopScale}) rotateX(${currentRotateX}deg) rotateY(${currentRotateY}deg)`;
-    }
-    if (tabletOp > 0) {
-      tablet.style.transform = `translate3d(0, 0, 0) perspective(1000px) scale(${tabletScale}) rotateX(${currentRotateX}deg) rotateY(${currentRotateY}deg)`;
-    }
-    if (mobileOp > 0) {
-      mobile.style.transform = `translate3d(0, 0, 0) perspective(1000px) scale(${Math.min(
-        1,
-        mobileScale
-      )}) rotateX(${currentRotateX}deg) rotateY(${currentRotateY}deg)`;
-    }
-
-    requestAnimationFrame(animate);
+    labelDesktop.className = activeIndex === 0 ? activeClass : inactiveClass;
+    labelTablet.className = activeIndex === 1 ? activeClass : inactiveClass;
+    labelMobile.className = activeIndex === 2 ? activeClass : inactiveClass;
   }
 
-  animate();
+  // Initial state
+  gsap.set(desktop, { opacity: 1, scale: 1, zIndex: 10 });
+  gsap.set(tablet, { opacity: 0, scale: 0.9, zIndex: 5 });
+  gsap.set(mobile, { opacity: 0, scale: 0.9, zIndex: 1 });
 }
 
 // Inject CSS first
